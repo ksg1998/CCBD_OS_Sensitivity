@@ -1,0 +1,200 @@
+sudo docker run -e "HOST_NAME=10.10.1.202" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3,18,19" -p 9040:8080 -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="4,5,20,21" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.202" -e "REGISTRY_PORT=9040" -e "SERVICE_PORT=1120" --net=container:webui4 -e "HOST_NAME=10.10.1.202" -e "DB_HOST=10.10.1.202" -e "DB_PORT=3340" --cpuset-cpus="6,7,22,23" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.202" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.202" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="8,9,24,25" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.202" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.202" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -e "SERVICE_PORT=3370" -p 3370:8080 --cpuset-cpus="10,11,26,27" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.202" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.202" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="12,13,28,29" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.202" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.202" -e "SERVICE_PORT=8010" -p 8010:8080 -p 1120:8080 --cpuset-cpus="14,15,30,31" --name=webui4 -d descartesresearch/teastore-webui
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3,18,19" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="4,5,20,21" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="6,7,22,23" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="8,9,24,25" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 --cpuset-cpus="10,11,26,27" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="12,13,28,29" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 -p 8090:8090 --cpuset-cpus="14,15,30,31" -d descartesresearch/teastore-webui
+
+
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 -d descartesresearch/teastore-webui
+
+
+
+java -jar httploadgenerator.jar director -s 10.10.1.202 -a 1350.csv -l teastore_browse.lua -o out.csv
+java -jar httploadgenerator.jar director -s 10.10.1.203 -a 850.csv -l teastore_buy.lua -o 22_08_2020/default_1.csv 
+
+wrk -t 32 -c 64 -d 30 -L -s Scripts/teastore-get-workload.lua http://10.10.1.201:8080/tools.descartes.teastore.webui/category -R 100
+sudo ./AMDuProfPcm -d 360 -o ~/gorubu/out.txt
+
+
+//Cache Stress Generator
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3" --memory="4096m" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="4,5" --memory="4096m" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="6,7" --memory="4096m" -d  descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="8,9" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 --cpuset-cpus="10,11" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="12,13" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="14,15" -d descartesresearch/teastore-webui
+
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="22,23" --memory="4096m" -p 9030:8090  -d descartesresearch/teastore-registry 
+sudo docker run -p 3330:3306 --cpuset-cpus="18,19" --memory="4096m" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1110" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3330" -p 1110:8090 --cpuset-cpus="20,21" --memory="4096m" -d  descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2250" -p 2250:8090 --cpuset-cpus="30,31" --memory="4096m" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3360" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3360:8090 --cpuset-cpus="10,11" --memory="4096m" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4460" -p 4460:8090 --cpuset-cpus="24,25" --memory="4096m" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8000" -p 8000:8080 --cpuset-cpus="28,29" --memory="4096m" -d descartesresearch/teastore-webui	
+
+
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2" --memory="8192m" -p 9040:8080  -d descartesresearch/teastore-registry
+sudo docker run -p 3340:3306 --cpuset-cpus="4" --memory="8192m" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="6" --memory="8192m" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="8" --memory="8192m" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=Preprocore complex diagramecessedSlopeOne" -p 3370:8080 --cpuset-cpus="10" --memory="8192m" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="12" --memory="8192m" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="14" --memory="8192m" -d descartesresearch/teastore-webui
+
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2" --memory="8192m" -p 9040:8080  -d descartesresearch/teastore-registry
+sudo docker run -p 3340:3306 --cpuset-cpus="4" --memory="8192m" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="6" --memory="8192m" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="8" --memory="8192m" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=Preprocore complex diagramecessedSlopeOne" -p 3370:8080 --cpuset-cpus="10" --memory="8192m" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="12" --memory="8192m" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="14" --memory="8192m" -d descartesresearch/teastore-webui
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3,18,19" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="2,3,18,19" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="2,3,18,19" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="2,3,18,19" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 --cpuset-cpus="2,3,18,19" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="2,3,18,19" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="2,3,18,19" -d descartesresearch/teastore-webui
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3,18,19,4,5,20,21" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="2,3,18,19,4,5,20,21" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="2,3,18,19,4,5,20,21" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="2,3,18,19,4,5,20,21" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 --cpuset-cpus="2,3,18,19,4,5,20,21" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="2,3,18,19,4,5,20,21" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="2,3,18,19,4,5,20,21" -d descartesresearch/teastore-webui
+
+
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25" -d descartesresearch/teastore-webui
+
+sudo docker run -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=9040" --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -p 9040:8080  -d descartesresearch/teastore-registry 
+sudo docker run -p 3340:3306 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -d descartesresearch/teastore-db
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=1120" -e "DB_HOST=10.10.1.203" -e "DB_PORT=3340" -p 1120:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -d descartesresearch/teastore-persistence
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=2260" -p 2260:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -d descartesresearch/teastore-auth 
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=3370" -e "RECOMMENDER_ALGORITHM=PreprocessedSlopeOne" -p 3370:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -d descartesresearch/teastore-recommender
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=4470" -p 4470:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -d descartesresearch/teastore-image
+sudo docker run -e "REGISTRY_HOST=10.10.1.203" -e "REGISTRY_PORT=9040" -e "HOST_NAME=10.10.1.203" -e "SERVICE_PORT=8010" -p 8010:8080 --cpuset-cpus="2,3,18,19,4,5,20,21,6,7,22,23,8,9,24,25,10,11,26,27,12,13,28,29,14,15,30,31,0,1,16,17" -d descartesresearch/teastore-webui
+
+
+
+Runqueue
+
+docker run --rm --name speedus-ubuntu -v /dev/shm:/dev/shm torusware/speedus-ubuntu speedus NPtcp &
+docker run --rm --net=container:speedus-ubuntu -v /dev/shm:/dev/shm torusware/speedus-ubuntu speedus NPtcp -h localhost
+
+available: 4 nodes (0-3)                                                                                                                                                                      node 0 cpus: 0 1 2 3 16 17 18 19                                                                                                                                                              node 0 size: 15971 MB                                                                                                                                                                         node 0 free: 11454 MB                                                                                                                                                                         node 1 cpus: 4 5 6 7 20 21 22 23                                                                                                                                                              node 1 size: 16125 MB                                                                                                                                                                         node 1 free: 10751 MB                                                                                                                                                                         node 2 cpus: 8 9 10 11 24 25 26 27                                                                                                                                                            node 2 size: 16125 MB                                                                                                                                                                         node 2 free: 11323 MB                                                                                                                                                                         node 3 cpus: 12 13 14 15 28 29 30 31                                                                                                                                                          node 3 size: 16104 MB                                                                                                                                                                         node 3 free: 2958 MB                                                                                                                                                                          node distances:                                                                                                                                                                               node   0   1   2   3                                                                                                                                                                          0:  10  16  16  16                                                                                                                                                                            1:  16  10  16  16                                                                                                                                                                            2:  16  16  10  16                                                                                                                                                                            3:  16  16  16  10
+
+sudo docker inspect --format='{{.Name}} {{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(sudo docker ps -q)
+
+./wrk -t 5 -c 10 -d 60 -L -s ./scripts/social-network/compose-post.lua http://localhost:8080/wrk2-api/post/compose -R 1500
+
+FROM yg397/social-network-microservices:latest
+WORKDIR /social-network-microservices/
+
+FROM mongo
+WORKDIR /
+COPY --from=0 . .
+WORKDIR /social-network-microservices/
+COPY start.sh .
+CMD ./start.sh
+
+
+FROM yg397/social-network-microservices:latest
+
+COPY script.sh .
+CMD ./script.sh
+
+#!/bin/bash 
+
+ComposePostService &
+mongod --bind_ip_all
+
+loopback_users.guest = false
+listeners.tcp.default = 5672
+default_pass = guest
+default_user = guest
+hipe_compile = false
+management.listener.port = 15672
+management.listener.ssl = false
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: teastore-image-and-recommender
+  labels: 
+    run: teastore-image-and-recommender
+spec:
+  
+  containers:
+  - name: teastore-image
+    image: descartesresearch/teastore-image
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+  - name: 2nd
+    image: debian
+    volumeMounts:
+    - name: html
+      mountPath: /html
+    command: ["/bin/sh", "-c"]
+    args:
+      - while true; do
+          date >> /html/index.html;
+          sleep 1;
+        done
+
+
+sudo tshark -i br-ff3b1b59da77 -a duration:30 -w F1/allPackets.pcapng & ./ParseStats.sh F1 30
+
+sudo tshark -i br-3b30433a3d29 -a duration:60 -w output/allPackets.pcapng & sudo sh ParseStats.sh output 60
+
+sudo sh Analyze_and_Partition.sh output
+
+
+FROM mongo
+WORKDIR /
+
+FROM yg397/social-network-microservices:latest
+WORKDIR /
+COPY --from=0 . .
+WORKDIR /social-network-microservices/
+COPY start.sh .
+CMD ./start.sh
+
+
+python3 Comphrehensive_Partition.py > output/Partition.csv
+
+tshark -r output/allPackets.pcapng -T fields -e frame.number -e frame.time -e ip.src -e ip.dst -e ip.proto -e frame.len -E header=y -E separator=, -E quote=d -E occurrence=f > AllReqs.csv
+
+https://join.skype.com/invite/X6cr3wUmfMPR
